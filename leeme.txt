@@ -1,0 +1,19 @@
+==Práctica 3==
+
+- Carpeta comprimida schedsim.tar.gz: Contiene todos los programas necesarios para calcular la siguiente tarea a ejecutar. 
+Mirar los archivos sched.c, seched_rr.c (round robin) y sched_sjf.c (shortest job first).
+Hacer un make y comprobar que compila sin problema
+Los ejemplos de lotes de tareas a ejecutar están en la sub-carpeta examples.
+
+- Carpeta comprimida gantt-gplot.tar.gz: Contiene todos los programas necesarios para dibujar la ejecución del lote de tareas (NO MODIFICAR)
+La carpeta debe contener dos ficheros ejecutables, en caso de que no tengas permiso de ejecución de estos programas tienes que darles permiso
+$ chmod +x generate_gantt_chart
+$ chmod +x gantt.py
+
+- La documentación de la práctica está pensada para que la carpeta schedsim y gantt-gplot cuelguen de la misma carpeta
+
+- Problemas si no estás utilizando la máquina virtual de debian 
+a) Que te falte algún programa, por el ejemplo el gnuplot:
+$ sudo apt-get install gnuplot
+b) Si quieres probar a instalarlo en Mac, usa el macports para instalar el paquete gnu
+c) Que no sepas cómo ver el archivo .eps: puedes hacerlo con programa como okular (no está en la máquina virtual) o yendo a una de las ventanas gnome y abriéndolo con el visor de documentos que viene instalado en la mvritual y en muchas versiones de gnu-linux (doble click en el icóno)
