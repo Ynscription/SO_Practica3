@@ -100,13 +100,13 @@ static void enqueue_task_prio(task_t* t,int cpu, int runnable)
 }
 
 
-/*static void task_tick_prio(runqueue_t* rq,int cpu)
+static void task_tick_prio(runqueue_t* rq,int cpu)
 {
     task_t* current = rq->cur_task;
     task_t* next = head_slist(&rq->tasks);
     //struct rr_data* cs_data=(struct rr_data*) current->tcs_data;
 
-    if (is_idle_task(current))
+    /*if (is_idle_task(current))
         return;
 
     if(current->remaining_ticks_slice<=0){
@@ -115,14 +115,14 @@ static void enqueue_task_prio(task_t* t,int cpu, int runnable)
 
     if(current->runnable_ticks_left==1){
         rq->nr_runnable--; //la tarea o bien está saliendo o se va a dormir justo ahora
-    }
+    }*/
 	if (current && next) {
     	if(current->prio > next->prio && preemptive_scheduler){
         	rq->need_resched=TRUE; //force resched
     	}
 	}
 
-}*/
+}
 
 static task_t* steal_task_prio(runqueue_t* rq,int cpu)
 {
