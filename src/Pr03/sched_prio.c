@@ -36,7 +36,7 @@ static task_t* pick_next_task_prio(runqueue_t* rq,int cpu)
     return t;
 }
 
-static int compare_tasks_cpu_burst(void *t1,void *t2)
+static int compare_tasks_prio (void *t1,void *t2)
 {
     task_t* tsk1=(task_t*)t1;
     task_t* tsk2=(task_t*)t2;
@@ -47,15 +47,16 @@ static void enqueue_task_prio(task_t* t,int cpu, int runnable)
 {
     runqueue_t* rq=get_runqueue_cpu(cpu);
 
+	//if the task is already on the run queue or its the idle task, do nothing
     if (t->on_rq || is_idle_task(t))
         return;
-
+	//
     if (t->flags & TF_INSERT_FRONT) {
         //Clear flag
         t->flags&=~TF_INSERT_FRONT;
-        sorted_insert_slist_front(&rq->tasks, t, 1, compare_tasks_cpu_burst);  //Push task
+        sorted_insert_slist_front(&rq->tasks, t, 1, compare_tasks_prio);  //Push task
     } else
-        sorted_insert_slist(&rq->tasks, t, 1, compare_tasks_cpu_burst);  //Push task
+        sorted_insert_slist(&rq->tasks, t, 1, compare_tasks_prio);  //Push task
 
 
 
@@ -63,11 +64,11 @@ static void enqueue_task_prio(task_t* t,int cpu, int runnable)
     if (!runnable) {
         task_t* current=rq->cur_task;
 
-        /* Trigger a preemption if this task has a shorter CPU burst than current */
-        if (preemptive_scheduler && !is_idle_task(current) && t->prio > current->prio) {
+        /* Trigger a preemption if this task has a higher priority than current */
+        if (preemptive_scheduler && (!is_idle_task(current)) && (t->prio > current->prio)) {
             rq->need_resched=TRUE;
             current->flags|=TF_INSERT_FRONT; /* To avoid unfair situations in the event
-                                                another task with the same length wakes up as well*/
+                                                another task with the same priority wakes up as well*/
         }
     }
 }
