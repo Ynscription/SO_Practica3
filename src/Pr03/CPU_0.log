@@ -8,10 +8,8 @@
 (t4): Context switch (P3)<->(P1)
 (t5): P1 running
 (t6): Task P1 goes to sleep until (t11)
-(t5): Task P2 migrated from CPU 1 to CPU 0 
-(t5): Context switch (P1)<->(P2)
-(t6): P2 running
-(t6): Context switch (P2)<->(idle)
+(t5): Context switch (P1)<->(idle)
+(t6): idle running
 (t7): idle running
 (t8): idle running
 (t9): idle running
@@ -28,5 +26,4 @@ P1	0	5	ready
 P1	5	6	running
 P1	6	11	I/O
 P1	11	15	running
-P2	6	7	running
 P3	0	5	running
