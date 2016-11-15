@@ -7,7 +7,9 @@
 #
 #-------------------------------------------------------------------------*/
 
-nombre_fich="test"
+nombre_fich="blank"
+
+preemp_options="-p"
 
 export curr_dir=$(pwd)
 
@@ -31,32 +33,44 @@ do
 				echo "Error al especificar cantidad de CPUs"
 			else
 				if [ -d resultados ]; then
-					rm -r resultados
+					rm -rf resultados
 				fi
 				mkdir resultados
 
-				cant_algoritmos=4
+				cant_algoritmos=6
 				for ((i=0; i<$cant_algoritmos; i++))
 				do
-					algoritmo=""
+					cmd =""
+					dir=""
 					if [ $i -eq 0 ]; then
-						algoritmo="RR"
+						dir="RR"
+						cmd=$dir
 					elif [ $i -eq 1 ]; then
-						algoritmo="SJF"
+						dir="SJF"
+						cmd=$dir
 					elif [ $i -eq 2 ]; then
-						algoritmo="FCFS"
+						dir="FCFS"
+						cmd=$dir
 					elif [ $i -eq 3 ]; then
-						algoritmo="PRIO"
+						dir="PRIO"
+						cmd=$dir
+					elif [ $i -eq 4 ]; then
+						dir="SJF_EXP"
+						cmd="SJF $preemp_options"
+						echo $algoritmo
+					elif [ $i -eq 5 ]; then
+						dir="PRIO_EXP"
+						cmd="PRIO $preemp_options"
+						echo $algoritmo
 					fi #schedsim, de no tener algoritmo un valor, se ejecutaria con -s sin especificar y daria error
 
 
 					for ((j=0; j<$num_cpus; j++))
 					do
 						cant=$(($j+1))
-						./schedsim -i 'examples/'$nombre_fich -s $algoritmo -n $cant
+						./schedsim -i 'examples/'$nombre_fich -s $cmd -n $cant
 						cd ../gantt-gplot
 
-						echo $curr_dir
 
 						for ((k=0; k<=$j; k++))
 						do
@@ -65,10 +79,10 @@ do
 
 
 						cd $curr_dir/resultados
-						mkdir ${algoritmo}_${cant}CPUS
+						mkdir ${dir}_${cant}CPUS
 						cd ..
-						mv *.log resultados/${algoritmo}_${cant}CPUS
-						mv *.eps resultados/${algoritmo}_${cant}CPUS
+						mv *.log resultados/${dir}_${cant}CPUS
+						mv *.eps resultados/${dir}_${cant}CPUS
 
 					done #for cpus por algoritmo
 
