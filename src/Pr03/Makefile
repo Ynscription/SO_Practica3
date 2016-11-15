@@ -26,3 +26,4 @@ clean:
 	rm -f *.o
 	rm -f $(TARGET)
 	rm -f  *~
+	rm -rf resultados
