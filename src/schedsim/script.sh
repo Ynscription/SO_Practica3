@@ -11,7 +11,7 @@ read n_cpus
 
 if [ "$n_cpus" -le 8 ] && [ "$n_cpus" -ge 1 ] && [ -f "examples/$example" ];
 then
-	
+
 	mkdir resultados
 	for nameSched in SJF RR PRIO FCFS
 	do
@@ -23,7 +23,7 @@ then
 			then
 				echo "Simulating $nameSched-EXP with $j CPUS"
 				mkdir -p resultados/$cpu_dir/$nameSched"-EXP"
-				./schedsim -i examples/$example -n $n_cpus -s $nameSched -p
+				./schedsim -i examples/$example -n $j -s $nameSched -p
 				i=0
 				while [  $i -lt $j ]; do
 	           	  	mv CPU_$i.log resultados/$cpu_dir/$nameSched"-EXP"/CPU-$i.log
@@ -35,7 +35,7 @@ then
 			fi
 
 			echo "Simulating $nameSched with $j CPUS"
-			./schedsim -i examples/$example -n $n_cpus -s $nameSched
+			./schedsim -i examples/$example -n $j -s $nameSched
 
 			mkdir -p resultados/$cpu_dir/$nameSched
 			i=0
