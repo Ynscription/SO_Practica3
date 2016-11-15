@@ -27,10 +27,12 @@ int sys_barrier_wait(sys_barrier_t *barrier)
 /* Barrier initialization function */
 int sys_barrier_init(sys_barrier_t *barrier, unsigned int nr_threads)
 {
-	/* Initialize fields in sys_barrier_t
-	     ... To be completed ....
-	*/
-	return 0;
+	 barrier->nr_threads_arrived=0; //inicializamos la variable a 0
+	 barrier->max_threads = nr_threads; //maximo de hilos de la barrera
+	 pthread_mutex_init(&barrier->mutex, NULL); //iniciar una variable de tipo mutex dentro de nuestra estructura en la barrera
+	 pthread_cond_init(&barrier->cond, NULL); //iniciar la variable condicional
+
+    return 0;
 }
 
 /* Destroy barrier resources */
@@ -39,6 +41,8 @@ int sys_barrier_destroy(sys_barrier_t *barrier)
 	/* Destroy synchronization resources associated with the barrier
 	      ... To be completed ....
 	*/
+	pthread_mutex_destroy(&barrier->mutex); //destruimos mutex
+	pthread_cond_destroy(&barrier->cond); //destruimos variable condicional
 	return 0;
 }
 
@@ -57,7 +61,21 @@ int sys_barrier_wait(sys_barrier_t *barrier)
 
 	    ... To be completed ....
 	*/
-	return 0;
+	 pthread_mutex_lock(&barrier->mutex); //el hilo que llega a la barrera adquiere el  mutex
+
+	barrier->nr_threads_arrived++; //incrementa de forma atomica el contador nr_threads_arrived
+	if (barrier->nr_threads_arrived != barrier->max_threads) {  //Si aun faltan mas hilos por llegar el hilo se bloquea con la V.cond
+			pthread_cond_wait(&barrier->cond, &barrier->mutex);        //hilo bloqueado en la varialbe cond a la espera de que llegue el último
+	}
+	if (barrier->nr_threads_arrived == barrier->max_threads)//Si es el ultimo hilo en llegar...
+	{
+	       barrier->nr_threads_arrived=0;  //1 resetea el estado de la barrera para la siguiente sys_barrier_wait()
+	       pthread_cond_broadcast(&barrier->cond); //2 despierta a todos los hilso bloqueados en la V.cond
+
+	}
+
+	pthread_mutex_unlock(&barrier->mutex);// Liberar mutex antes de salir de la funcion
+    return 0;
 }
 
 #endif /* POSIX_BARRIER */

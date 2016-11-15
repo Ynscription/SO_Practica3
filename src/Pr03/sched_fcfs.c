@@ -1,36 +1,34 @@
 #include "sched.h"
 
-static task_t* pick_next_task_fcfs(runqueue_t* rq,int cpu)
-{
-	task_t* t=head_slist(&rq->tasks);
+static task_t* pick_next_task_fcfs(runqueue_t* rq,int cpu){
 
-	/* Current is not on the rq -> let's remove it */
-	if (t) 
-		remove_slist(&rq->tasks,t);
+   task_t* t=head_slist(&rq->tasks);
 
-	return t;
+   if (t) 
+      remove_slist(&rq->tasks,t);
+   return t;
 }
 
-static void enqueue_task_fcfs(task_t* t,int cpu, int runnable)
-{
-	runqueue_t* rq=get_runqueue_cpu(cpu);
+static void enqueue_task_fcfs(task_t* t,int cpu, int runnable){
 
-	if (t->on_rq || is_idle_task(t))
-		return;
+   runqueue_t* rq=get_runqueue_cpu(cpu);
 
-	insert_slist(&rq->tasks,t); //Push task
+   if (t->on_rq || is_idle_task(t))
+      return;
+
+   insert_slist(&rq->tasks,t); //Push task
 }
 
-static task_t* steal_task_fcfs(runqueue_t* rq,int cpu)
-{
-	task_t* t=tail_slist(&rq->tasks);
+static task_t* steal_task_fcfs(runqueue_t* rq,int cpu){
 
-	if (t) {
-		remove_slist(&rq->tasks,t);
-		t->on_rq=FALSE;
-		rq->nr_runnable--;
-	}
-	return t;
+   task_t* t=tail_slist(&rq->tasks);
+
+   if (t) {
+      remove_slist(&rq->tasks,t);
+      t->on_rq=FALSE;
+      rq->nr_runnable--;
+   }
+   return t;
 }
 
 sched_class_t fcfs_sched= {

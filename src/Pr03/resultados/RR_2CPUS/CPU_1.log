@@ -1,0 +1,30 @@
+(t0): New task P2
+(t0): New task P4
+(t0): P2 running
+(t1): P2 running
+(t2): P2 running
+(t3): P2 running
+(t4): P2 running
+(t5): P2 running
+(t6): P2 running
+(t7): P2 running
+(t7): Context switch (P2)<->(P4)
+(t8): P4 running
+(t9): P4 running
+(t10): P4 running
+(t11): P4 running
+(t12): P4 running
+(t12): Task P3 migrated from CPU 0 to CPU 1 
+(t12): Context switch (P4)<->(P3)
+(t13): P3 running
+(t14): P3 running
+(t15): P3 running
+(t16): P3 running
+(t17): P3 running
+(t17): Context switch (P3)<->(idle)
+==================
+P2	0	8	running
+P3	13	18	running
+P4	0	1	ready
+P4	6	8	ready
+P4	8	13	running

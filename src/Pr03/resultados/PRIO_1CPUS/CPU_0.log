@@ -1,0 +1,48 @@
+(t0): New task P2
+(t0): New task P4
+(t0): P2 running
+(t1): P2 running
+(t2): P2 running
+(t3): New task P1
+(t3): P2 running
+(t4): New task P3
+(t4): P2 running
+(t5): P2 running
+(t6): P2 running
+(t7): P2 running
+(t7): Context switch (P2)<->(P4)
+(t8): P4 running
+(t9): P4 running
+(t10): P4 running
+(t11): P4 running
+(t12): P4 running
+(t13): P4 running
+(t14): P4 running
+(t15): P4 running
+(t15): Context switch (P4)<->(P1)
+(t16): P1 running
+(t17): P1 running
+(t18): P1 running
+(t19): P1 running
+(t20): P1 running
+(t21): P1 running
+(t22): P1 running
+(t23): P1 running
+(t23): Context switch (P1)<->(P3)
+(t24): P3 running
+(t25): P3 running
+(t26): P3 running
+(t27): P3 running
+(t28): P3 running
+(t29): P3 running
+(t30): P3 running
+(t31): P3 running
+(t31): Context switch (P3)<->(idle)
+==================
+P1	3	16	ready
+P1	16	24	running
+P2	0	8	running
+P3	4	24	ready
+P3	24	32	running
+P4	0	8	ready
+P4	8	16	running

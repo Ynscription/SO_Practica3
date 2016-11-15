@@ -1,0 +1,26 @@
+(t0): New task P2
+(t0): New task P4
+(t0): P2 running
+(t1): P2 running
+(t2): P2 running
+(t3): P2 running
+(t4): P2 running
+(t5): P2 running
+(t6): P2 running
+(t7): P2 running
+(t7): Context switch (P2)<->(P3)
+(t8): P3 running
+(t9): P3 running
+(t10): P3 running
+(t11): P3 running
+(t12): P3 running
+(t13): P3 running
+(t14): P3 running
+(t15): P3 running
+(t15): Context switch (P3)<->(idle)
+(t16): idle running
+==================
+P2	0	8	running
+P3	6	8	ready
+P3	8	16	running
+P4	0	1	ready
