@@ -4,7 +4,7 @@ static task_t* pick_next_task_fcfs(runqueue_t* rq,int cpu){
 
    task_t* t=head_slist(&rq->tasks);
 
-   if (t) 
+   if (t)
       remove_slist(&rq->tasks,t);
    return t;
 }
