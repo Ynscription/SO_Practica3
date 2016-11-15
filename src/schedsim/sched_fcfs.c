@@ -26,7 +26,7 @@ static task_t* steal_task_fcfs(runqueue_t* rq,int cpu){
    if (t) {
       remove_slist(&rq->tasks,t);
       t->on_rq=FALSE;
-      rq->nr_runnable--;
+      //rq->nr_runnable--;
    }
    return t;
 }

@@ -24,6 +24,8 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	rm -f *.o
+	rm .f *.log
+	rm -f *.eps
 	rm -f $(TARGET)
 	rm -f  *~
 	rm -rf resultados
