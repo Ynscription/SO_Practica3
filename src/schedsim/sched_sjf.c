@@ -1,11 +1,11 @@
 #include "sched.h"
-//Shortest Job First
+
 static task_t* pick_next_task_sjf(runqueue_t* rq,int cpu)
 {
 	task_t* t=head_slist(&rq->tasks);
 
 	/* Current is not on the rq -> let's remove it */
-	if (t)
+	if (t) 
 		remove_slist(&rq->tasks,t);
 
 	return t;

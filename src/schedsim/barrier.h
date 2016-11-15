@@ -12,13 +12,13 @@ typedef pthread_barrier_t sys_barrier_t;
 #else
 /* Synchronization barrier */
 typedef struct {
-	pthread_mutex_t mutex;		/* Barrier lock */
-	pthread_cond_t cond;		/* Condition variable where threads remain blocked */
-	int nr_threads_arrived[2];	/* Number of threads that reached the barrier.
-    							[0] Counter for even barriers, [1] Counter for odd barriers */
-	int max_threads;			/* Number of threads that rely on the syncronization barrier
+	pthread_mutex_t mutex;		/* Cerrojo de la barrera */
+	pthread_cond_t cond;		/* variable condicional donde se bloquean los hilos*/
+	int nr_threads_arrived/*[2]*/;	/* numero de hilos que han llegado a la barrera
+    							[0] Counter for even barriers(contador para barreras pares), [1] Counter for odd barriers(contador de barreras impares) */
+	int max_threads;			/* numero de hilos que han llegado a la barrera
     							   (This value is set up upon barrier creation, and must not be modified afterwards) */
-	unsigned char cur_barrier;	/* Field to indicate whether the current barrier is an even (0) or an odd (1) barrier */
+	//unsigned char cur_barrier;	/* Field to indicate whether the current barrier is an even (0) or an odd (1) barrier */
 } sys_barrier_t;
 #endif
 

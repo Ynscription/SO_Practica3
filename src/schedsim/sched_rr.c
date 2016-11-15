@@ -1,5 +1,5 @@
 #include "sched.h"
-//Round Robin
+
 /* Global RR quantum parameter */
 int rr_quantum=3;
 
@@ -34,7 +34,7 @@ static task_t* pick_next_task_rr(runqueue_t* rq,int cpu)
 	task_t* t=head_slist(&rq->tasks);
 
 	/* Current is not on the rq -> let's remove it */
-	if (t)
+	if (t) 
 		remove_slist(&rq->tasks,t);
 
 	return t;
@@ -70,7 +70,7 @@ static task_t* steal_task_rr(runqueue_t* rq,int cpu)
 {
 	task_t* t=tail_slist(&rq->tasks);
 
-	if (t)
+	if (t) 
 		remove_slist(&rq->tasks,t);
 
 	return t;

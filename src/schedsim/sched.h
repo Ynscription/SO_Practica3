@@ -53,7 +53,7 @@ typedef struct {
 	bool on_rq;						/* Marker to check if the task is on the rq or not !! */
 	unsigned long flags;			/* generic flags field */
 	void* tcs_data;					/* Pointer enabling a scheduling class to store private data if needed */
-	/* General statistics */	
+	/* General statistics */
 	int user_time;					/* CPU time */
 	int real_time;					/* Elapsed time since the application entered the system */
 	int sys_time;					/* For now this time reflects the time the thread spends doing IO */
@@ -114,11 +114,15 @@ typedef struct sched_class {
 /* Scheduling class descriptors */
 extern sched_class_t rr_sched;
 extern sched_class_t sjf_sched;
+extern sched_class_t prio_sched;
+extern sched_class_t fcfs_sched;
 
 /* Numerical IDs for the available scheduling algorithms */
 enum {
 	RR_SCHED,
 	SJF_SCHED,
+	PRIO_SCHED,
+	FCFS_SCHED,
 	NR_AVAILABLE_SCHEDULERS
 };
 
@@ -132,6 +136,8 @@ typedef struct sched_choice {
 static const sched_choice_t available_schedulers[NR_AVAILABLE_SCHEDULERS]= {
 	{RR_SCHED,"RR",&rr_sched},
 	{SJF_SCHED,"SJF",&sjf_sched},
+	{PRIO_SCHED, "PRIO", &prio_sched},
+	{FCFS_SCHED, "FCFS", &fcfs_sched},
 };
 
 

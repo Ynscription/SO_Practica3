@@ -20,7 +20,7 @@ typedef struct {
 
 
 runqueue_t runqueues[MAX_CPUS];	/* Per-CPU run queues  */
-slist_t sched_events[MAX_CPUS]; /* This is where waiting tasks and newly created ones 
+slist_t sched_events[MAX_CPUS]; /* This is where waiting tasks and newly created ones
 								 * are stored until they are eligible to run
 				 				 **/
 FILE* cpu_log[MAX_CPUS];	/* Per-CPU log files */
@@ -64,7 +64,7 @@ static inline void unlock_rq(runqueue_t* rq)
 static inline void double_lock_rq(runqueue_t* this_rq,runqueue_t* remote_rq)
 {
 
-	/* 
+	/*
 	 * If it's a smaller CPU ID, simply acquire the lock
 	 * Otherwise, unlock this_rq first and lock both RQs following
 	 * the locking protocol
@@ -79,7 +79,7 @@ static inline void double_lock_rq(runqueue_t* this_rq,runqueue_t* remote_rq)
 }
 
 
-/* 
+/*
  * This function parses an input file describing the various tasks.
  * On success, it returns a task list (task_t).
  */
@@ -377,7 +377,7 @@ sched_event_t* get_next_sched_event(int cpu, int timeout)
 }
 
 /*
- * Enqueue a task on a given rq and update the 
+ * Enqueue a task on a given rq and update the
  * necessary fields in the task and rq structures
  * Note that the run queue lock must be held before invoking this function
  */
@@ -520,7 +520,7 @@ static void scheduler_tick(int cpu,int simulation_step)
 	unlock_rq(cpu_rq);
 }
 
-/* 
+/*
  * This function performs the work associated with moving a task from one CPU to another.
  * The locks of both CPU run queues must be already held.
  */
@@ -531,22 +531,25 @@ static void move_one_task(runqueue_t* src_rq,int src_cpu,runqueue_t* dst_rq,int 
 
 	/* Perform actual task migration */
 	stolen_task=active_sched_class->steal_task(src_rq,src_cpu);
-	stolen_task->on_rq=FALSE;
-	src_rq->nr_runnable--;
+	//If the queue was empty, the stolen_task will be NULL, so no moving can be done
+	if (stolen_task != NULL) {
+		stolen_task->on_rq=FALSE;
+		src_rq->nr_runnable--;
 
-	do_enqueue_task(stolen_task,dst_rq,dst_cpu,0);
+		do_enqueue_task(stolen_task,dst_rq,dst_cpu,0);
 
-	/* Keep track of how long the task was runnable
-	 * Update real time and add log register
-	*/
-	time_on_rq=(simulation_step-stolen_task->last_time_enqueued+1);
-	stolen_task->real_time+=time_on_rq;
-	add_log_register(stolen_task,TS_RUNNABLE,src_cpu,stolen_task->last_time_enqueued,time_on_rq);
-	write_cpu_log(this_cpu,"(t%d): Task %s migrated from CPU %d to CPU %d \n", simulation_step,stolen_task->task_name,src_cpu,dst_cpu);
-	stolen_task->last_time_enqueued=simulation_step+1; /* It will be enqueued starting the next interval */
+		/* Keep track of how long the task was runnable
+		 * Update real time and add log register
+		*/
+		time_on_rq=(simulation_step-stolen_task->last_time_enqueued+1);
+		stolen_task->real_time+=time_on_rq;
+		add_log_register(stolen_task,TS_RUNNABLE,src_cpu,stolen_task->last_time_enqueued,time_on_rq);
+		write_cpu_log(this_cpu,"(t%d): Task %s migrated from CPU %d to CPU %d \n", simulation_step,stolen_task->task_name,src_cpu,dst_cpu);
+		stolen_task->last_time_enqueued=simulation_step+1; /* It will be enqueued starting the next interval */
+	}
 }
 
-/* 
+/*
  * Performs load balancing from this_cpu
  * if it's due time or the CPU is idle
  * */
@@ -639,7 +642,7 @@ static void load_balance (int this_cpu,int simulation_step)
 	unlock_rq(this_rq);
 }
 
-/* 
+/*
  * This is is the main scheduler function. It takes care of
  * selecting a new task to run and performs the associated
  * context switch if necessary.
@@ -657,14 +660,14 @@ static void schedule(int cpu,int simulation_step)
 
 		/* Give current a chance to be selected again if it's still runnnable */
 		if (prev->state==TS_ONPROC)
-			do_enqueue_task(prev,cpu_rq,cpu,1);			
+			do_enqueue_task(prev,cpu_rq,cpu,1);
 
 		next=active_sched_class->pick_next_task(cpu_rq,cpu);
 
 		/* Pick the IDLE task if there are no runnable tasks for now */
-		if (!next) 
+		if (!next)
 			next=&cpu_rq->idle_task;
-		else 
+		else
 			next->on_rq=FALSE; /* Update on_rq since we removed the task from the queue */
 
 		cpu_rq->cur_task=next; /* Update current */
@@ -750,13 +753,13 @@ void* sched_cpu(void* arg)
 	lock_rq(cpu_rq);
 	cur=active_sched_class->pick_next_task(cpu_rq,this_cpu);
 
-	if (!cur) 
+	if (!cur)
 		cur=&cpu_rq->idle_task;
-	else 
+	else
 		cur->on_rq=FALSE; /* Update on_rq since we removed the task from the queue */
 
 	/* Update current as well as the state */
-	cpu_rq->cur_task=cur; 
+	cpu_rq->cur_task=cur;
 	cur->state=TS_ONPROC;
 
 	/* After this step the CPU may still be idle -> current may be the idle task */
@@ -790,10 +793,10 @@ void* sched_cpu(void* arg)
 	return NULL;
 }
 
-/* 
+/*
  * This function enables to start up the simulator with
  * a given scheduling algorithm and specified task list.
- * 
+ *
  */
 void sched_start(slist_t* task_list, struct sched_class* sc)
 {
@@ -836,7 +839,7 @@ void sched_start(slist_t* task_list, struct sched_class* sc)
 	for (cpu=0; cpu<nr_cpus; cpu++)
 		pthread_join(sim_cpu[cpu],NULL);
 
-	/* 
+	/*
 	 * Print log information to aid in
 	 * the construction of the gantt diagram
 	 * */
