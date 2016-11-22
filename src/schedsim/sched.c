@@ -383,14 +383,31 @@ sched_event_t* get_next_sched_event(int cpu, int timeout)
  */
 static void do_enqueue_task(task_t* t,runqueue_t* rq, int cpu, int runnable)
 {
+	bool changed = 0;
+	if ((t->prio == 0) && (cpu != 0)) {
+		cpu = 0;
+		changed = 1;
+	}else if (cpu == 0){
+		cpu = 1;
+		changed = 1;
+	}
+
 	active_sched_class->enqueue_task(t,cpu,runnable);
 	t->on_rq=TRUE;
 
 	/* If the task was not runnable before on this RQ (just change the status) */
 	if (!runnable) {
-		rq->nr_runnable++;
+		if (changed) {
+				runqueue_t* aux = get_runqueue_cpu (cpu);
+				lock_rq (aux);
+				aux->nr_runnable++;
+				unlock_rq (aux);
+		}else {
+			rq->nr_runnable++;
+		}
 		t->last_cpu=cpu;
 	}
+
 }
 
 /*
@@ -555,6 +572,8 @@ static void move_one_task(runqueue_t* src_rq,int src_cpu,runqueue_t* dst_rq,int 
  * */
 static void load_balance (int this_cpu,int simulation_step)
 {
+	if (this_cpu == 0)
+	 	return;
 	runqueue_t* this_rq=get_runqueue_cpu(this_cpu);
 	int load_cpus[MAX_CPUS];
 	int max_load,min_load,nr_tasks_system;
@@ -584,13 +603,14 @@ static void load_balance (int this_cpu,int simulation_step)
 		max_load=-1;
 		nr_tasks_system=0;
 
-		for (i=0; i<nr_cpus; i++) {
+		for (i=1; i<nr_cpus; i++) {
 			load_cpus[i]=get_runqueue_cpu(i)->nr_runnable;
 			nr_tasks_system+=load_cpus[i];
 
 			if (load_cpus[i]> max_load) {
 				max_load=load_cpus[i];
 				cpu_max_load=i;
+
 			}
 
 			if (load_cpus[i]< min_load) {
@@ -601,7 +621,7 @@ static void load_balance (int this_cpu,int simulation_step)
 
 		if (max_load-min_load<=1) {
 			load_balanced_system=TRUE;
-		} else if (load_cpus[this_cpu]==max_load) {
+		} else if (load_cpus[this_cpu]==max_load)  {
 			runqueue_t* remote_rq=get_runqueue_cpu(cpu_min_load);
 
 			/* Acquire remote CPU's rq lock */

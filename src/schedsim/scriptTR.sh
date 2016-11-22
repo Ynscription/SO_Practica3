@@ -11,9 +11,8 @@ do
 	echo "Simulating $nameSched with 1 CPUS"
 	./schedsim -i examples/exampleA1.txt -s $nameSched -p
 
-	mkdir -p resultados/$nameSched
-  	mv CPU_0.log resultados/$nameSched/CPU-0.log
+  	mv CPU_0.log resultados/$nameSched"_CPU-0.log"
 	cd ../gantt-gplot
-	./generate_gantt_chart ../schedsim/resultados/$nameSched/CPU-0.log
+	./generate_gantt_chart ../schedsim/resultados/$nameSched"_CPU-0.log"
 	cd ../schedsim
 done
